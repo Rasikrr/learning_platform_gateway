@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+
+option go_package = "github.com/Rasikrr/learning_platform_users/pkg/server/users/grpc;users";
+
+package users;
+
+service Users{
+  rpc GetByEmail(GetByEmailRequest) returns (GetByEmailReply){}
+
+}
+
+message GetByEmailRequest{
+  string email = 1;
+}
+
+message GetByEmailReply{
+  string first_name = 1;
+  string last_name = 2;
+}
