@@ -50,3 +50,15 @@
         value = true
         envName = "TEST_BOOL"
         required = true
+    [env.users_grpc_address]
+        type = "string"
+        name = "users_grpc_address"
+        value = "localhost:3000"
+        envName = "USERS_GRPC_ADDRESS"
+        required = true
+    [env.auth_grpc_address]
+        type = "string"
+        name = "auth_grpc_address"
+        value = "localhost:3001"
+        envName = "AUTH_GRPC_ADDRESS"
+        required = true

@@ -19,7 +19,11 @@ type client struct {
 }
 
 func NewClient(ctx context.Context, addr string) (Client, error) {
-	conn, err := grpc.NewClient(ctx, addr, grpc2.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(
+		ctx,
+		addr,
+		grpc2.WithTransportCredentials(insecure.NewCredentials()),
+	)
 
 	if err != nil {
 		return nil, err
@@ -35,5 +39,5 @@ func (c *client) GetByEmail(ctx context.Context, email string) (*entity.User, er
 		log.Println(err)
 		return nil, err
 	}
-	return convert(reply), nil
+	return convert(reply)
 }

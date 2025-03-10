@@ -1,19 +1,22 @@
 package users
 
 import (
+	coreEnum "github.com/Rasikrr/learning_platform_core/enum"
 	"github.com/Rasikrr/learning_platform_gateway/internal/domain/entity"
+	"time"
 )
 
 //go:generate easyjson -all models.go
 
-type updateUserRequest struct {
-	Name     *string `json:"name"`
-	LastName *string `json:"last_name"`
-}
-
 type User struct {
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
+	ID        string               `json:"id"`
+	Name      *string              `json:"name"`
+	LastName  *string              `json:"last_name"`
+	Email     string               `json:"email"`
+	Role      coreEnum.AccountRole `json:"role"`
+	CreatedAt time.Time            `json:"created_at"`
+	UpdatedAt time.Time            `json:"updated_at"`
+	DeletedAt *time.Time           `json:"deleted_at"`
 }
 
 type userResponse struct {
@@ -28,15 +31,13 @@ func convertUserResponse(user *entity.User) userResponse {
 
 func convertUser(user *entity.User) User {
 	return User{
-		FirstName: user.FirstName,
+		ID:        user.ID,
+		Name:      user.Name,
 		LastName:  user.LastName,
-		//ID:        user.ID.String(),
-		//Name:      user.Name,
-		//LastName:  user.LastName,
-		//Email:     user.Email,
-		//Role:      user.AccountRole,
-		//CreatedAt: user.CreatedAt,
-		//UpdatedAt: user.UpdatedAt,
-		//DeletedAt: user.DeletedAt,
+		Email:     user.Email,
+		Role:      user.AccountRole,
+		CreatedAt: user.CreatedAt,
+		UpdatedAt: user.UpdatedAt,
+		DeletedAt: user.DeletedAt,
 	}
 }

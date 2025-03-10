@@ -2,7 +2,6 @@ package users
 
 import (
 	"github.com/Rasikrr/learning_platform_core/api"
-	"log"
 	"net/http"
 )
 
@@ -19,8 +18,7 @@ func (c *Controller) getUser(w http.ResponseWriter, r *http.Request) {
 
 	user, err := c.usersService.GetByEmail(ctx, email)
 	if err != nil {
-		log.Println(err)
-		//api.SendError(w, http.StatusInternalServerError, err)
+		api.SendError(w, http.StatusInternalServerError, err)
 		return
 	}
 	api.SendData(w, convertUserResponse(user), http.StatusOK)

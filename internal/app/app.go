@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"github.com/Rasikrr/learning_platform_core/application"
+	authC "github.com/Rasikrr/learning_platform_gateway/internal/clients/auth"
 	usersC "github.com/Rasikrr/learning_platform_gateway/internal/clients/users"
 	"github.com/Rasikrr/learning_platform_gateway/internal/envs"
 	"github.com/Rasikrr/learning_platform_gateway/internal/ports/http"
@@ -11,8 +12,9 @@ import (
 
 type App struct {
 	*application.App
-	usersService usersS.Service
+	authClient   authC.Client
 	usersClient  usersC.Client
+	usersService usersS.Service
 }
 
 func NewApp(ctx context.Context, name string) (*App, error) {
@@ -45,6 +47,10 @@ func (a *App) initClients(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	a.authClient, err = authC.NewClient(ctx, a.Config().Env.Get(envs.AuthGRPcAddress).GetString())
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -57,6 +63,7 @@ func (a *App) initHTTP(_ context.Context) error {
 	http.NewServer(
 		a.HTTPServer(),
 		a.usersService,
+		a.authClient,
 	)
 	return nil
 }
