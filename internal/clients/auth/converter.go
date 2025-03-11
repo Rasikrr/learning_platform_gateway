@@ -16,12 +16,15 @@ func convertAuth(auth *pb.AuthResponse) (*entity.Auth, error) {
 
 func convertSession(sesPb *pb.Session) (*session.Session, error) {
 	ses := session.Session{}
+	ses.SetUserID(sesPb.UserId)
 	ses.SetEmail(sesPb.Email)
+
 	role, err := coreEnum.AccountRoleString(sesPb.Role)
 	if err != nil {
 		return nil, err
 	}
 	ses.SetRole(role)
+
 	for k, v := range sesPb.Claims {
 		ses.SetClaim(k, v)
 	}

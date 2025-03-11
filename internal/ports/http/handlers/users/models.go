@@ -2,6 +2,7 @@ package users
 
 import (
 	coreEnum "github.com/Rasikrr/learning_platform_core/enum"
+	"github.com/Rasikrr/learning_platform_core/http/session"
 	"github.com/Rasikrr/learning_platform_gateway/internal/domain/entity"
 	"time"
 )
@@ -17,6 +18,19 @@ type User struct {
 	CreatedAt time.Time            `json:"created_at"`
 	UpdatedAt time.Time            `json:"updated_at"`
 	DeletedAt *time.Time           `json:"deleted_at"`
+}
+
+type updateUserRequest struct {
+	Name     *string `json:"name"`
+	LastName *string `json:"last_name"`
+}
+
+func (r updateUserRequest) ToEntity(session *session.Session) *entity.UpdateUserParams {
+	return &entity.UpdateUserParams{
+		ID:       session.UserID(),
+		Name:     r.Name,
+		LastName: r.LastName,
+	}
 }
 
 type userResponse struct {

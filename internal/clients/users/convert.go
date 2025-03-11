@@ -2,13 +2,16 @@ package users
 
 import (
 	coreEnum "github.com/Rasikrr/learning_platform_core/enum"
+	coreErrors "github.com/Rasikrr/learning_platform_core/errors"
 	"github.com/Rasikrr/learning_platform_core/grpc/converters"
 	"github.com/Rasikrr/learning_platform_gateway/internal/domain/entity"
 	pb "github.com/Rasikrr/learning_platform_gateway/pkg/deps/api/proto/users"
 )
 
-func convert(res *pb.GetByEmailResponse) (*entity.User, error) {
-	user := res.GetUser()
+func convertUser(user *pb.User) (*entity.User, error) {
+	if user == nil {
+		return nil, coreErrors.ErrNotFound
+	}
 	role, err := coreEnum.AccountRoleString(user.GetAccountRole())
 	if err != nil {
 		return nil, err

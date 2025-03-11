@@ -84,7 +84,104 @@ func (v *userResponse) UnmarshalJSON(data []byte) error {
 func (v *userResponse) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformGatewayInternalPortsHttpHandlersUsers(l, v)
 }
-func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformGatewayInternalPortsHttpHandlersUsers1(in *jlexer.Lexer, out *User) {
+func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformGatewayInternalPortsHttpHandlersUsers1(in *jlexer.Lexer, out *updateUserRequest) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "name":
+			if in.IsNull() {
+				in.Skip()
+				out.Name = nil
+			} else {
+				if out.Name == nil {
+					out.Name = new(string)
+				}
+				*out.Name = string(in.String())
+			}
+		case "last_name":
+			if in.IsNull() {
+				in.Skip()
+				out.LastName = nil
+			} else {
+				if out.LastName == nil {
+					out.LastName = new(string)
+				}
+				*out.LastName = string(in.String())
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformGatewayInternalPortsHttpHandlersUsers1(out *jwriter.Writer, in updateUserRequest) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"name\":"
+		out.RawString(prefix[1:])
+		if in.Name == nil {
+			out.RawString("null")
+		} else {
+			out.String(string(*in.Name))
+		}
+	}
+	{
+		const prefix string = ",\"last_name\":"
+		out.RawString(prefix)
+		if in.LastName == nil {
+			out.RawString("null")
+		} else {
+			out.String(string(*in.LastName))
+		}
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v updateUserRequest) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformGatewayInternalPortsHttpHandlersUsers1(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v updateUserRequest) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformGatewayInternalPortsHttpHandlersUsers1(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *updateUserRequest) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformGatewayInternalPortsHttpHandlersUsers1(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *updateUserRequest) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformGatewayInternalPortsHttpHandlersUsers1(l, v)
+}
+func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformGatewayInternalPortsHttpHandlersUsers2(in *jlexer.Lexer, out *User) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -161,7 +258,7 @@ func easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformGatewayInternalPortsH
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformGatewayInternalPortsHttpHandlersUsers1(out *jwriter.Writer, in User) {
+func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformGatewayInternalPortsHttpHandlersUsers2(out *jwriter.Writer, in User) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -223,23 +320,23 @@ func easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformGatewayInternalPortsH
 // MarshalJSON supports json.Marshaler interface
 func (v User) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformGatewayInternalPortsHttpHandlersUsers1(&w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformGatewayInternalPortsHttpHandlersUsers2(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v User) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformGatewayInternalPortsHttpHandlersUsers1(w, v)
+	easyjsonD2b7633eEncodeGithubComRasikrrLearningPlatformGatewayInternalPortsHttpHandlersUsers2(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *User) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformGatewayInternalPortsHttpHandlersUsers1(&r, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformGatewayInternalPortsHttpHandlersUsers2(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *User) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformGatewayInternalPortsHttpHandlersUsers1(l, v)
+	easyjsonD2b7633eDecodeGithubComRasikrrLearningPlatformGatewayInternalPortsHttpHandlersUsers2(l, v)
 }

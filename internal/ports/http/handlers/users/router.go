@@ -1,25 +1,32 @@
 package users
 
 import (
-	usersS "github.com/Rasikrr/learning_platform_gateway/internal/services/users"
+	usersC "github.com/Rasikrr/learning_platform_gateway/internal/clients/users"
+	"github.com/Rasikrr/learning_platform_gateway/internal/ports/http/middlewares"
 	"github.com/go-chi/chi/v5"
 )
 
 type Controller struct {
-	usersService usersS.Service
+	usersClient usersC.Client
+	m           *middlewares.AuthMiddleware
 }
 
 func NewController(
-	usersService usersS.Service,
+	usersClient usersC.Client,
+	m *middlewares.AuthMiddleware,
 ) *Controller {
 	return &Controller{
-		usersService: usersService,
+		usersClient: usersClient,
+		m:           m,
 	}
 }
 
-func (c *Controller) Init(r *chi.Mux) {
-	//r.HandleFunc("GET /api/v1/users/me", c.m.Handle(c.getMyProfile))
-	r.HandleFunc("GET /api/v1/users/{email}", c.getUser)
-	//r.HandleFunc("PUT /api/v1/users/update", c.m.Handle(c.updateUser))
-	//r.HandleFunc("DELETE /api/v1/users/me/delete", c.m.Handle(c.deleteUser))
+func (c *Controller) Init(router *chi.Mux) {
+	router.Route("/api/v1/users", func(r chi.Router) {
+		r.With(c.m.Handle).Get("/me", c.getMyProfile)
+		r.With(c.m.Handle).Put("/update", c.updateUser)
+		r.With(c.m.Handle).Delete("/me/delete", c.deleteUser)
+
+		r.Get("/{id}", c.getUser)
+	})
 }

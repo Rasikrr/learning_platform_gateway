@@ -4,7 +4,7 @@ go 1.23
 
 require (
 	github.com/Rasikrr/learning_platform v0.0.0-20250219192334-10b8019c3f15
-	github.com/Rasikrr/learning_platform_core v0.0.20
+	github.com/Rasikrr/learning_platform_core v0.0.27
 	github.com/go-chi/chi/v5 v5.2.1
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang/mock v1.6.0

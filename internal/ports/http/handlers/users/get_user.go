@@ -2,6 +2,7 @@ package users
 
 import (
 	"github.com/Rasikrr/learning_platform_core/api"
+	"log"
 	"net/http"
 )
 
@@ -14,9 +15,10 @@ import (
 // @Router /api/v1/users/{id} [get]
 func (c *Controller) getUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	email := r.PathValue("email")
+	id := r.PathValue("id")
+	log.Println(id)
 
-	user, err := c.usersService.GetByEmail(ctx, email)
+	user, err := c.usersClient.GetByID(ctx, id)
 	if err != nil {
 		api.SendError(w, http.StatusInternalServerError, err)
 		return

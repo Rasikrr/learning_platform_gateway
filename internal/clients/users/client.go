@@ -11,7 +11,10 @@ import (
 )
 
 type Client interface {
+	GetByID(ctx context.Context, id string) (*entity.User, error)
 	GetByEmail(ctx context.Context, email string) (*entity.User, error)
+	Delete(ctx context.Context, id string) error
+	Update(ctx context.Context, params *entity.UpdateUserParams) error
 }
 
 type client struct {
@@ -33,11 +36,42 @@ func NewClient(ctx context.Context, addr string) (Client, error) {
 	}, nil
 }
 
+func (c *client) GetByID(ctx context.Context, id string) (*entity.User, error) {
+	reply, err := c.client.GetByID(ctx, &pb.GetByIDRequest{UserId: id})
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	return convertUser(reply.User)
+}
+
 func (c *client) GetByEmail(ctx context.Context, email string) (*entity.User, error) {
 	reply, err := c.client.GetByEmail(ctx, &pb.GetByEmailRequest{Email: email})
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
-	return convert(reply)
+	return convertUser(reply.User)
+}
+
+func (c *client) Update(ctx context.Context, params *entity.UpdateUserParams) error {
+	_, err := c.client.UpdateUser(ctx, &pb.UpdateUserRequest{
+		UserId:   params.ID,
+		Name:     params.Name,
+		LastName: params.LastName,
+	})
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
+}
+
+func (c *client) Delete(ctx context.Context, id string) error {
+	_, err := c.client.Delete(ctx, &pb.DeleteUserRequest{UserId: id})
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
 }

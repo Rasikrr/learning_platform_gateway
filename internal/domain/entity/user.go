@@ -18,3 +18,9 @@ type User struct {
 	UpdatedAt   time.Time            `json:"updated_at"`
 	DeletedAt   *time.Time           `json:"deleted_at"`
 }
+
+type UpdateUserParams struct {
+	ID       string  `json:"id"`
+	Name     *string `json:"name"`
+	LastName *string `json:"last_name"`
+}

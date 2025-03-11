@@ -7,14 +7,12 @@ import (
 	usersC "github.com/Rasikrr/learning_platform_gateway/internal/clients/users"
 	"github.com/Rasikrr/learning_platform_gateway/internal/envs"
 	"github.com/Rasikrr/learning_platform_gateway/internal/ports/http"
-	usersS "github.com/Rasikrr/learning_platform_gateway/internal/services/users"
 )
 
 type App struct {
 	*application.App
-	authClient   authC.Client
-	usersClient  usersC.Client
-	usersService usersS.Service
+	authClient  authC.Client
+	usersClient usersC.Client
 }
 
 func NewApp(ctx context.Context, name string) (*App, error) {
@@ -54,15 +52,14 @@ func (a *App) initClients(ctx context.Context) error {
 	return nil
 }
 
-func (a *App) initServices(ctx context.Context) error {
-	a.usersService = usersS.NewService(a.usersClient)
+func (a *App) initServices(_ context.Context) error {
 	return nil
 }
 
 func (a *App) initHTTP(_ context.Context) error {
 	http.NewServer(
 		a.HTTPServer(),
-		a.usersService,
+		a.usersClient,
 		a.authClient,
 	)
 	return nil
