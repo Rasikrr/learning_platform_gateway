@@ -62,3 +62,9 @@
         value = "localhost:3001"
         envName = "AUTH_GRPC_ADDRESS"
         required = true
+    [env.courses_grpc_address]
+        type = "string"
+        name = "courses_grpc_address"
+        value = "localhost:3002"
+        envName = "COURSES_GRPC_ADDRESS"
+        required = true

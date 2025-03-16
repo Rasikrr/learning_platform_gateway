@@ -15,12 +15,14 @@ func NewController(authClient authC.Client) *Controller {
 	}
 }
 
-func (c *Controller) Init(r *chi.Mux) {
-	r.HandleFunc("POST /api/v1/auth/login", c.login)
-	r.HandleFunc("POST /api/v1/auth/register", c.register)
-	r.HandleFunc("POST /api/v1/auth/logout", c.logout)
-	r.HandleFunc("POST /api/v1/auth/register/confirm", c.confirmRegister)
-	r.HandleFunc("POST /api/v1/auth/refresh", c.refreshHandler)
-	r.HandleFunc("POST /api/v1/auth/password/reset", c.resetPassword)
-	r.HandleFunc("POST /api/v1/auth/password/reset/confirm", c.confirmResetPassword)
+func (c *Controller) Init(route *chi.Mux) {
+	route.Route("/api/v1/auth", func(r chi.Router) {
+		r.Post("/login", c.login)
+		r.Post("/register", c.register)
+		r.Post("/logout", c.logout)
+		r.Post("/register/confirm", c.confirmRegister)
+		r.Post("/refresh", c.refreshHandler)
+		r.Post("/password/reset", c.resetPassword)
+		r.Post("/password/reset/confirm", c.confirmResetPassword)
+	})
 }

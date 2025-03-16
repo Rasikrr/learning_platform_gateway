@@ -15,6 +15,9 @@ type Client interface {
 	GetByEmail(ctx context.Context, email string) (*entity.User, error)
 	Delete(ctx context.Context, id string) error
 	Update(ctx context.Context, params *entity.UpdateUserParams) error
+	GetUserEnrollments(ctx context.Context, userID string) ([]*entity.Enrollment, error)
+	Enroll(ctx context.Context, userID string, courseID string) error
+	CheckEnrollment(ctx context.Context, userID string, courseID string) (bool, error)
 }
 
 type client struct {
@@ -74,4 +77,37 @@ func (c *client) Delete(ctx context.Context, id string) error {
 		return err
 	}
 	return nil
+}
+
+func (c *client) Enroll(ctx context.Context, userID string, courseID string) error {
+	_, err := c.client.Enroll(ctx, &pb.EnrollRequest{
+		UserId:   userID,
+		CourseId: courseID,
+	})
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
+}
+
+func (c *client) GetUserEnrollments(ctx context.Context, userID string) ([]*entity.Enrollment, error) {
+	reply, err := c.client.GetUserEnrollments(ctx, &pb.GetUserEnrollmentsRequest{UserId: userID})
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	return convertEnrollments(reply.Enrollments...)
+}
+
+func (c *client) CheckEnrollment(ctx context.Context, userID string, courseID string) (bool, error) {
+	reply, err := c.client.CheckEnrollment(ctx, &pb.CheckEnrollmentRequest{
+		UserId:   userID,
+		CourseId: courseID,
+	})
+	if err != nil {
+		log.Println(err)
+		return false, err
+	}
+	return reply.Enrolled, nil
 }

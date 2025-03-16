@@ -19,12 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Users_GetByEmail_FullMethodName    = "/users.Users/GetByEmail"
-	Users_GetByID_FullMethodName       = "/users.Users/GetByID"
-	Users_Create_FullMethodName        = "/users.Users/Create"
-	Users_UpdateUser_FullMethodName    = "/users.Users/UpdateUser"
-	Users_ResetPassword_FullMethodName = "/users.Users/ResetPassword"
-	Users_Delete_FullMethodName        = "/users.Users/Delete"
+	Users_GetByEmail_FullMethodName         = "/users.Users/GetByEmail"
+	Users_GetByID_FullMethodName            = "/users.Users/GetByID"
+	Users_Create_FullMethodName             = "/users.Users/Create"
+	Users_UpdateUser_FullMethodName         = "/users.Users/UpdateUser"
+	Users_ResetPassword_FullMethodName      = "/users.Users/ResetPassword"
+	Users_Delete_FullMethodName             = "/users.Users/Delete"
+	Users_CheckEnrollment_FullMethodName    = "/users.Users/CheckEnrollment"
+	Users_GetUserEnrollments_FullMethodName = "/users.Users/GetUserEnrollments"
+	Users_Enroll_FullMethodName             = "/users.Users/Enroll"
 )
 
 // UsersClient is the client API for Users service.
@@ -37,6 +40,9 @@ type UsersClient interface {
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*EmptySuccessResponse, error)
 	ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*EmptySuccessResponse, error)
 	Delete(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*EmptySuccessResponse, error)
+	CheckEnrollment(ctx context.Context, in *CheckEnrollmentRequest, opts ...grpc.CallOption) (*CheckEnrollmentResponse, error)
+	GetUserEnrollments(ctx context.Context, in *GetUserEnrollmentsRequest, opts ...grpc.CallOption) (*GetUserEnrollmentsResponse, error)
+	Enroll(ctx context.Context, in *EnrollRequest, opts ...grpc.CallOption) (*EmptySuccessResponse, error)
 }
 
 type usersClient struct {
@@ -101,6 +107,33 @@ func (c *usersClient) Delete(ctx context.Context, in *DeleteUserRequest, opts ..
 	return out, nil
 }
 
+func (c *usersClient) CheckEnrollment(ctx context.Context, in *CheckEnrollmentRequest, opts ...grpc.CallOption) (*CheckEnrollmentResponse, error) {
+	out := new(CheckEnrollmentResponse)
+	err := c.cc.Invoke(ctx, Users_CheckEnrollment_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *usersClient) GetUserEnrollments(ctx context.Context, in *GetUserEnrollmentsRequest, opts ...grpc.CallOption) (*GetUserEnrollmentsResponse, error) {
+	out := new(GetUserEnrollmentsResponse)
+	err := c.cc.Invoke(ctx, Users_GetUserEnrollments_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *usersClient) Enroll(ctx context.Context, in *EnrollRequest, opts ...grpc.CallOption) (*EmptySuccessResponse, error) {
+	out := new(EmptySuccessResponse)
+	err := c.cc.Invoke(ctx, Users_Enroll_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UsersServer is the server API for Users service.
 // All implementations must embed UnimplementedUsersServer
 // for forward compatibility
@@ -111,6 +144,9 @@ type UsersServer interface {
 	UpdateUser(context.Context, *UpdateUserRequest) (*EmptySuccessResponse, error)
 	ResetPassword(context.Context, *ResetPasswordRequest) (*EmptySuccessResponse, error)
 	Delete(context.Context, *DeleteUserRequest) (*EmptySuccessResponse, error)
+	CheckEnrollment(context.Context, *CheckEnrollmentRequest) (*CheckEnrollmentResponse, error)
+	GetUserEnrollments(context.Context, *GetUserEnrollmentsRequest) (*GetUserEnrollmentsResponse, error)
+	Enroll(context.Context, *EnrollRequest) (*EmptySuccessResponse, error)
 	mustEmbedUnimplementedUsersServer()
 }
 
@@ -135,6 +171,15 @@ func (UnimplementedUsersServer) ResetPassword(context.Context, *ResetPasswordReq
 }
 func (UnimplementedUsersServer) Delete(context.Context, *DeleteUserRequest) (*EmptySuccessResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
+}
+func (UnimplementedUsersServer) CheckEnrollment(context.Context, *CheckEnrollmentRequest) (*CheckEnrollmentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckEnrollment not implemented")
+}
+func (UnimplementedUsersServer) GetUserEnrollments(context.Context, *GetUserEnrollmentsRequest) (*GetUserEnrollmentsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserEnrollments not implemented")
+}
+func (UnimplementedUsersServer) Enroll(context.Context, *EnrollRequest) (*EmptySuccessResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Enroll not implemented")
 }
 func (UnimplementedUsersServer) mustEmbedUnimplementedUsersServer() {}
 
@@ -257,6 +302,60 @@ func _Users_Delete_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Users_CheckEnrollment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckEnrollmentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServer).CheckEnrollment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Users_CheckEnrollment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServer).CheckEnrollment(ctx, req.(*CheckEnrollmentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Users_GetUserEnrollments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserEnrollmentsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServer).GetUserEnrollments(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Users_GetUserEnrollments_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServer).GetUserEnrollments(ctx, req.(*GetUserEnrollmentsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Users_Enroll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EnrollRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServer).Enroll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Users_Enroll_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServer).Enroll(ctx, req.(*EnrollRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Users_ServiceDesc is the grpc.ServiceDesc for Users service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -287,6 +386,18 @@ var Users_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Delete",
 			Handler:    _Users_Delete_Handler,
+		},
+		{
+			MethodName: "CheckEnrollment",
+			Handler:    _Users_CheckEnrollment_Handler,
+		},
+		{
+			MethodName: "GetUserEnrollments",
+			Handler:    _Users_GetUserEnrollments_Handler,
+		},
+		{
+			MethodName: "Enroll",
+			Handler:    _Users_Enroll_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

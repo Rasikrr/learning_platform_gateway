@@ -23,9 +23,11 @@ func NewController(
 
 func (c *Controller) Init(router *chi.Mux) {
 	router.Route("/api/v1/users", func(r chi.Router) {
-		r.With(c.m.Handle).Get("/me", c.getMyProfile)
-		r.With(c.m.Handle).Put("/update", c.updateUser)
-		r.With(c.m.Handle).Delete("/me/delete", c.deleteUser)
+		protected := r.With(c.m.Handle)
+
+		protected.With(c.m.Handle).Get("/me", c.getMyProfile)
+		protected.With(c.m.Handle).Put("/update", c.updateUser)
+		protected.With(c.m.Handle).Delete("/me/delete", c.deleteUser)
 
 		r.Get("/{id}", c.getUser)
 	})

@@ -3,9 +3,9 @@ package enrollments
 import (
 	"context"
 	"errors"
-	"github.com/Rasikrr/learning_platform/internal/domain/entity"
-	"github.com/Rasikrr/learning_platform/internal/repositories/courses"
-	"github.com/Rasikrr/learning_platform/internal/repositories/enrollments"
+	coursesC "github.com/Rasikrr/learning_platform_gateway/internal/clients/courses"
+	usersC "github.com/Rasikrr/learning_platform_gateway/internal/clients/users"
+	"github.com/Rasikrr/learning_platform_gateway/internal/domain/entity"
 	"github.com/samber/lo"
 )
 
@@ -16,37 +16,41 @@ type Service interface {
 }
 
 type service struct {
-	coursesRepository     courses.Repository
-	enrollmentsRepository enrollments.Repository
+	coursesClient coursesC.Client
+	usersClient   usersC.Client
 }
 
 func NewService(
-	coursesRepository courses.Repository,
-	enrollmentsRepository enrollments.Repository,
+	coursesClient coursesC.Client,
+	usersClient usersC.Client,
 ) Service {
 	return &service{
-		coursesRepository:     coursesRepository,
-		enrollmentsRepository: enrollmentsRepository,
+		usersClient:   usersClient,
+		coursesClient: coursesClient,
 	}
 }
 
 func (s *service) Enroll(ctx context.Context, userID string, courseID string) error {
-	course, err := s.coursesRepository.GetByID(ctx, courseID)
+	course, err := s.coursesClient.GetCourseByID(ctx, courseID)
 	if err != nil {
 		return err
 	}
-	enrolled, err := s.CheckEnrollment(ctx, userID, course.ID.String())
+	enrolled, err := s.CheckEnrollment(ctx, userID, course.ID)
 	if err != nil {
 		return err
 	}
 	if enrolled {
 		return errors.New("user already enrolled")
 	}
-	return s.enrollmentsRepository.Enroll(ctx, userID, course.ID.String())
+	return s.usersClient.Enroll(ctx, userID, course.ID)
 }
 
 func (s *service) CheckEnrollment(ctx context.Context, userID string, courseID string) (bool, error) {
-	exists, err := s.enrollmentsRepository.CheckByUserIDAndCourseID(ctx, userID, courseID)
+	course, err := s.coursesClient.GetCourseByID(ctx, courseID)
+	if err != nil {
+		return false, err
+	}
+	exists, err := s.usersClient.CheckEnrollment(ctx, userID, course.ID)
 	if err != nil {
 		return false, err
 	}
@@ -54,25 +58,25 @@ func (s *service) CheckEnrollment(ctx context.Context, userID string, courseID s
 }
 
 func (s *service) GetUserEnrollments(ctx context.Context, userID string) ([]*entity.Enrollment, error) {
-	enrollments, err := s.enrollmentsRepository.GetUserEnrollments(ctx, userID)
+	enrollments, err := s.usersClient.GetUserEnrollments(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
-	return s.mergeEnrollments(ctx, enrollments)
-}
-
-func (s *service) mergeEnrollments(ctx context.Context, enrollments []*entity.Enrollment) ([]*entity.Enrollment, error) {
-	courses, err := s.coursesRepository.GetByIDs(ctx, lo.Map(enrollments, func(enrollment *entity.Enrollment, _ int) string {
-		return enrollment.Course.ID.String()
+	courses, err := s.coursesClient.GetCoursesByIDs(ctx, lo.Map(enrollments, func(enrollment *entity.Enrollment, _ int) string {
+		return enrollment.Course.ID
 	}))
 	if err != nil {
 		return nil, err
 	}
+	return s.mergeEnrollments(ctx, enrollments, courses)
+}
+
+func (s *service) mergeEnrollments(_ context.Context, enrollments []*entity.Enrollment, courses []*entity.Course) ([]*entity.Enrollment, error) {
 	coursesMap := lo.SliceToMap(courses, func(course *entity.Course) (string, *entity.Course) {
-		return course.ID.String(), course
+		return course.ID, course
 	})
 	for _, enrollment := range enrollments {
-		enrollment.Course = *coursesMap[enrollment.Course.ID.String()]
+		enrollment.Course = coursesMap[enrollment.Course.ID]
 	}
 	return enrollments, nil
 }
