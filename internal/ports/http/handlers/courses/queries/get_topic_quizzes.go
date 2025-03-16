@@ -1,7 +1,8 @@
 package queries
 
 import (
-	"github.com/Rasikrr/learning_platform/api"
+	"github.com/Rasikrr/learning_platform_core/api"
+	"github.com/Rasikrr/learning_platform_core/http/session"
 	"net/http"
 )
 
@@ -17,7 +18,7 @@ import (
 // @Router /api/v1/courses/{course_id}/topic/{topic_id}/quizzes [get]
 func (c *Controller) getCourseTopicQuizzes(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	session, err := api.GetSession(ctx)
+	ses, err := session.GetFromCtx(ctx)
 	if err != nil {
 		api.SendError(w, http.StatusInternalServerError, err)
 		return
@@ -28,7 +29,7 @@ func (c *Controller) getCourseTopicQuizzes(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	quizzes, passed, err := c.coursesClient.GetQuizzesByTopicID(ctx, session.UserID.String(), req.TopicID)
+	quizzes, passed, err := c.coursesClient.GetQuizzesByTopicID(ctx, ses.UserID(), req.CourseID, req.TopicID)
 	if err != nil {
 		api.SendError(w, http.StatusBadRequest, err)
 		return

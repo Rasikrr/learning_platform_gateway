@@ -21,11 +21,12 @@ type Client interface {
 
 	GetContentByTopicID(ctx context.Context, courseID, topicID string) (*entity.TopicContent, error)
 
-	GetQuizzesByTopicID(ctx context.Context, userID, topicID string) ([]*entity.Quiz, bool, error)
+	GetQuizzesByTopicID(ctx context.Context, userID, courseID, topicID string) ([]*entity.Quiz, bool, error)
 
 	GetTasksByTopicIDAndOrderNum(
 		ctx context.Context,
-		id string,
+		courseID string,
+		topicID string,
 		order int,
 		userID string) (*entity.PracticalTask, *entity.TaskSubmission, error)
 }

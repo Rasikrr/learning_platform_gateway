@@ -57,10 +57,11 @@ func (c *client) GetContentByTopicID(ctx context.Context, courseID, topicID stri
 	return convertContentToEntity(out.Content), nil
 }
 
-func (c *client) GetQuizzesByTopicID(ctx context.Context, userID, topicID string) ([]*entity.Quiz, bool, error) {
+func (c *client) GetQuizzesByTopicID(ctx context.Context, userID, courseID, topicID string) ([]*entity.Quiz, bool, error) {
 	out, err := c.client.GetQuizzesByTopicID(ctx, &pb.GetQuizzesByTopicIDRequest{
-		UserId:  userID,
-		TopicId: topicID,
+		UserId:   userID,
+		CourseId: courseID,
+		TopicId:  topicID,
 	})
 	if err != nil {
 		return nil, false, err
@@ -71,13 +72,15 @@ func (c *client) GetQuizzesByTopicID(ctx context.Context, userID, topicID string
 
 func (c *client) GetTasksByTopicIDAndOrderNum(
 	ctx context.Context,
-	id string,
+	courseID string,
+	topicID string,
 	order int,
 	userID string) (*entity.PracticalTask, *entity.TaskSubmission, error) {
 	out, err := c.client.GetTasksByTopicIDAndOrderNum(ctx, &pb.GetTasksByTopicIDAndOrderNumRequest{
-		Id:     id,
-		Order:  int32(order),
-		UserId: userID,
+		TopicId:  topicID,
+		CourseId: courseID,
+		Order:    int32(order),
+		UserId:   userID,
 	})
 	if err != nil {
 		return nil, nil, err

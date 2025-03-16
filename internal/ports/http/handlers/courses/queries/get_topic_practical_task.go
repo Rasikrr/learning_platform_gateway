@@ -1,7 +1,8 @@
 package queries
 
 import (
-	"github.com/Rasikrr/learning_platform/api"
+	"github.com/Rasikrr/learning_platform_core/api"
+	"github.com/Rasikrr/learning_platform_core/http/session"
 	"net/http"
 )
 
@@ -23,12 +24,12 @@ func (c *Controller) getCourseTopicTasks(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	ctx := r.Context()
-	session, err := api.GetSession(ctx)
+	ses, err := session.GetFromCtx(ctx)
 	if err != nil {
 		api.SendError(w, http.StatusUnauthorized, err)
 		return
 	}
-	tasks, solution, err := c.coursesClient.GetTasksByTopicIDAndOrderNum(ctx, req.TopicID, req.Order, session.UserID.String())
+	tasks, solution, err := c.coursesClient.GetTasksByTopicIDAndOrderNum(ctx, req.CourseID, req.TopicID, req.Order, ses.UserID())
 	if err != nil {
 		api.SendError(w, http.StatusBadRequest, err)
 		return
